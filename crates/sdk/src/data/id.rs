@@ -1,0 +1,78 @@
+use super::{super::dispatch_bindings::*, namespace::*};
+
+use std::fmt;
+
+//
+// Id
+//
+
+impl PartialEq for Id {
+    fn eq(&self, other: &Self) -> bool {
+        (self.kind == other.kind) && (self.namespace == other.namespace) && (self.id == other.id)
+    }
+}
+
+impl Id {
+    /// Constructor
+    pub fn new(kind: Kind, namespace: Namespace) -> Self {
+        Self::new_for(kind, namespace, String::new())
+    }
+
+    /// Constructor
+    pub fn new_for(kind: Kind, namespace: Namespace, id: String) -> Self {
+        Self { kind, namespace, id }
+    }
+
+    /// Constructor
+    pub fn new_from(value: &Value) -> Option<Self> {
+        if let Some(id) = value.get(&"id".into()) {
+            if let Value::Text(id) = id {
+                if let Some(kind) = value.get(&"kind".into()) {
+                    if let Value::Text(kind) = kind {
+                        if let Ok(kind) = Kind::try_from(kind.as_str()) {
+                            return Some(Self::parse(kind, id));
+                        }
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Parse.
+    pub fn parse(kind: Kind, id: &str) -> Self {
+        let segments: Vec<&str> = id.split(":").collect();
+        let length = segments.len();
+        if length > 0 {
+            Self::new_for(
+                kind,
+                segments[..length - 1].iter().map(|segment| segment.to_string()).collect(),
+                segments[length - 1].into(),
+            )
+        } else {
+            Self::new_for(kind, Namespace::new(), id.into())
+        }
+    }
+
+    /// Parse namespace.
+    pub fn parse_namespace(namespace: &str) -> Namespace {
+        namespace.split(":").map(|segment| segment.into()).collect()
+    }
+
+    /// To namespace.
+    pub fn to_namespace(&self) -> Namespace {
+        let mut namespace = self.namespace.clone();
+        namespace.push(self.id.clone());
+        namespace
+    }
+}
+
+impl fmt::Display for Id {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for segment in &self.namespace {
+            write!(formatter, "{}:", segment)?;
+        }
+        write!(formatter, "{}", self.id)
+    }
+}
