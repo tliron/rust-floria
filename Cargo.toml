@@ -1,0 +1,8 @@
+[workspace]
+resolver = "3"
+members = ["library", "sdk"]
+
+[profile.release]
+# Especially important for wasm!
+strip = "debuginfo"
+lto = "thin"        # true is *very* slow to build!
