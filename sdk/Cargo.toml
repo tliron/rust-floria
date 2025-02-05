@@ -1,0 +1,35 @@
+[package]
+edition = "2024"
+
+name = "floria-plugin-sdk"
+description = "Floria plugin SDK"
+version = "0.0.1"
+rust-version = "1.90"
+
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/tliron/floria"
+documentation = "https://docs.rs/floria"
+authors = ["Tal Liron"]
+
+readme = "../../README.md"
+
+categories = [] # https://crates.io/category_slugs
+keywords = [
+    "cloud",
+    "orchestration",
+    "wasm",
+    "tosca",
+    "floria",
+    "puccini",
+    "khutulun",
+]
+
+[dependencies]
+duplicate = "2.0.0"
+ordered-float = "5.0.0"
+wit-bindgen = "0.46.0"
+
+# https://stackoverflow.com/a/61417700
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

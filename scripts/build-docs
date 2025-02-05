@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
+. "$HERE/_env"
+
+cd "$ROOT"
+
+# https://stackoverflow.com/a/61417700
+
+RUSTDOCFLAGS="--cfg docsrs" \
+cargo +nightly doc --all-features --open \
+    --package=floria \
+    --package=floria-plugin-sdk

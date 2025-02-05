@@ -1,0 +1,114 @@
+package floria:plugins;
+
+interface floria {
+    variant any {
+        null,
+        integer(s64),
+        unsigned-integer(u64),
+        float(f64),
+        boolean(bool),
+        text(string),
+        blob(list<u8>),
+        any-list(any-list),
+        any-map(any-map),
+        any-call(any-call),
+    }
+
+    resource any-list {
+        constructor(values: list<any>);
+        get: func() -> list<any>;
+        length: func() -> u64;
+    }
+
+    resource any-map {
+        constructor(kv-pairs: list<tuple<any, any>>);
+        get: func() -> list<tuple<any, any>>;
+        length: func() -> u64;
+    }
+
+    resource any-call {
+        constructor(name: string, arguments: list<any>);
+        get: func() -> tuple<string, list<any>>;
+    }
+
+    variant kind {
+        class,
+        vertex-template,
+        edge-template,
+        vertex,
+        edge,
+    }
+
+    record id {
+        kind: kind,
+        directory: list<string>,
+        id: string,
+    }
+
+    record site {
+        id: id,
+        path: list<string>,
+    }
+
+    log: func(source: string, message: string);
+    evaluate-expression: func(expression: any, site: site) -> result<any, string>;
+    get-entity: func(id: id) -> result<any, string>;
+}
+
+interface dispatch {
+    variant any {
+        null,
+        integer(s64),
+        unsigned-integer(u64),
+        float(f64),
+        boolean(bool),
+        text(string),
+        blob(list<u8>),
+        any-list(any-list),
+        any-map(any-map),
+        any-call(any-call),
+    }
+
+    resource any-list {
+        constructor(values: list<any>);
+        get: func() -> list<any>;
+        length: func() -> u64;
+    }
+
+    resource any-map {
+        constructor(kv-pairs: list<tuple<any, any>>);
+        get: func() -> list<tuple<any, any>>;
+        length: func() -> u64;
+    }
+
+    resource any-call {
+        constructor(name: string, arguments: list<any>);
+        get: func() -> tuple<string, list<any>>;
+    }
+
+    variant kind {
+        class,
+        vertex-template,
+        edge-template,
+        vertex,
+        edge,
+    }
+
+    record id {
+        kind: kind,
+        directory: list<string>,
+        id: string,
+    }
+
+    record site {
+        id: id,
+        path: list<string>,
+    }
+
+    dispatch: func(name: string, arguments: list<any>, site: site) -> result<any, string>;
+}
+
+world dispatch-plugin {
+    import floria;
+    export dispatch;
+}

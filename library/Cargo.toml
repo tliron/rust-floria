@@ -1,0 +1,54 @@
+[package]
+edition = "2024"
+
+name = "floria"
+description = "Floria data system for cloud orchestration"
+version = "0.0.1"
+rust-version = "1.90"
+
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/tliron/floria"
+documentation = "https://docs.rs/floria"
+authors = ["Tal Liron"]
+
+readme = "../../README.md"
+
+categories = [] # https://crates.io/category_slugs
+keywords = [
+    "cloud",
+    "orchestration",
+    "wasm",
+    "tosca",
+    "floria",
+    "puccini",
+    "khutulun",
+]
+
+[dependencies]
+compris = { version = "=0.0.7", features = ["serde"] }
+kutil = { version = "=0.0.1", features = ["cli", "std", "fast_collections", "immutable", "derive"] }
+ordered-float = { optional = true, version = "5.0.0" }
+thiserror = "2.0.16"
+tracing = "0.1.41"
+# https://docs.rs/wasmtime/latest/wasmtime/index.html#crate-features
+wasmtime = { optional = true, version = "37.0.1", default-features = false, features = [
+    "cranelift",
+    "parallel-compilation",
+    "pooling-allocator",
+] }
+wasmtime-wasi = { optional = true, version = "37.0.1" }
+
+[features]
+plugins = ["dep:ordered-float", "dep:wasmtime", "dep:wasmtime-wasi"]
+wasm_debug = [
+    "wasmtime/demangle",
+    "wasmtime/profiling",
+    "wasmtime/coredump",
+    "wasmtime/addr2line",
+    "wasmtime/debug-builtins",
+]
+
+# https://stackoverflow.com/a/61417700
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
