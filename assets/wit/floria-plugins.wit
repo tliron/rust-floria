@@ -1,0 +1,77 @@
+package floria:plugins;
+
+interface host {
+    variant value {
+        null,
+        integer(s64),
+        unsigned-integer(u64),
+        float(f64),
+        boolean(bool),
+        text(string),
+        bytes(list<u8>),
+        nested-list(nested-list),
+        nested-map(nested-map),
+    }
+
+    resource nested-list {
+        constructor(values: list<value>);
+        get: func() -> list<value>;
+        length: func() -> u64;
+    }
+
+    resource nested-map {
+        constructor(kv-pairs: list<tuple<value, value>>);
+        get: func() -> list<tuple<value, value>>;
+        length: func() -> u64;
+    }
+
+    log: func(source: string, message: string);
+    get-node: func(id: string) -> result<value, string>;
+    get-relationship: func(id: string) -> result<value, string>;
+}
+
+interface dispatcher {
+    variant value {
+        null,
+        integer(s64),
+        unsigned-integer(u64),
+        float(f64),
+        boolean(bool),
+        text(string),
+        bytes(list<u8>),
+        nested-list(nested-list),
+        nested-map(nested-map),
+    }
+
+    resource nested-list {
+        constructor(values: list<value>);
+        get: func() -> list<value>;
+        length: func() -> u64;
+    }
+
+    resource nested-map {
+        constructor(kv-pairs: list<tuple<value, value>>);
+        get: func() -> list<tuple<value, value>>;
+        length: func() -> u64;
+    }
+
+    record site {
+        kind: string,
+        id: string,
+        property-name: string,
+    }
+
+    record error {
+        name: string,
+        arguments: list<string>,
+        site: site,
+        message: string,
+    }
+
+    dispatch: func(name: string, arguments: list<value>, site: site) -> result<value, error>;
+}
+
+world functions {
+    import host;
+    export dispatcher;
+}
