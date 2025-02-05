@@ -1,0 +1,16 @@
+[workspace]
+members = ["crates/library", "crates/sdk"]
+resolver = "3"
+
+[patch.crates-io]
+compris = { path = "../rust-compris/crates/library" }
+kutil-cli = { path = "../rust-kutil/crates/cli" }
+kutil-cli-macros = { path = "../rust-kutil/crates/cli-macros" }
+kutil-io = { path = "../rust-kutil/crates/io" }
+kutil-std = { path = "../rust-kutil/crates/std" }
+kutil-std-macros = { path = "../rust-kutil/crates/std-macros" }
+
+[profile.release]
+# Especially important for wasm!
+strip = "debuginfo"
+lto = "thin"        # true is *very* slow to build!

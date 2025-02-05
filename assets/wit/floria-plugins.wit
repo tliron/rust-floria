@@ -1,0 +1,103 @@
+package floria:plugins;
+
+interface floria {
+    variant value {
+        null,
+        integer(s64),
+        unsigned-integer(u64),
+        float(f64),
+        boolean(bool),
+        text(string),
+        blob(list<u8>),
+        nested-list(nested-list),
+        nested-map(nested-map),
+    }
+
+    resource nested-list {
+        constructor(values: list<value>);
+        get: func() -> list<value>;
+        length: func() -> u64;
+    }
+
+    resource nested-map {
+        constructor(kv-pairs: list<tuple<value, value>>);
+        get: func() -> list<tuple<value, value>>;
+        length: func() -> u64;
+    }
+
+    variant kind {
+        group,
+        node-template,
+        relationship-template,
+        node,
+        relationship,
+    }
+
+    record id {
+        kind: kind,
+        namespace: list<string>,
+        id: string,
+    }
+
+    log: func(source: string, message: string);
+    get-entity: func(id: id) -> result<value, string>;
+}
+
+interface dispatch {
+    variant value {
+        null,
+        integer(s64),
+        unsigned-integer(u64),
+        float(f64),
+        boolean(bool),
+        text(string),
+        blob(list<u8>),
+        nested-list(nested-list),
+        nested-map(nested-map),
+    }
+
+    resource nested-list {
+        constructor(values: list<value>);
+        get: func() -> list<value>;
+        length: func() -> u64;
+    }
+
+    resource nested-map {
+        constructor(kv-pairs: list<tuple<value, value>>);
+        get: func() -> list<tuple<value, value>>;
+        length: func() -> u64;
+    }
+
+    variant kind {
+        group,
+        node-template,
+        relationship-template,
+        node,
+        relationship,
+    }
+
+    record id {
+        kind: kind,
+        namespace: list<string>,
+        id: string,
+    }
+
+    record site {
+        id: id,
+        property-name: option<string>,
+    }
+
+    record error {
+        name: string,
+        arguments: list<string>,
+        site: site,
+        message: string,
+    }
+
+    dispatch: func(name: string, arguments: list<value>, site: site) -> result<value, error>;
+}
+
+world dispatch-plugin {
+    import floria;
+    export dispatch;
+}
